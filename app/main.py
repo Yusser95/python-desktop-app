@@ -1,32 +1,55 @@
-import tkinter
+from tkinter import *
 
-# importing library for plotting 
-from matplotlib import pyplot as plt 
-# importing required libraries of opencv 
+root = Tk()
+root.title('Model Definition')
 
-import cv2
-from cv2 import imread,calcHist,cvtColor,imshow,COLOR_BGR2GRAY
+root.geometry('{}x{}'.format(460, 350))
 
-# Create a window
-window = tkinter.Tk()
-  
-# reads an input image 
-image = imread('flower.jpg') 
- 
-# find frequency of pixels in range 0-255 
-histr = calcHist([image],[0],None,[256],[0,256]) 
-gray = cvtColor(image, COLOR_BGR2GRAY)
+# create all of the main containers
+top_frame = Frame(root, bg='cyan', width=450, height=50, pady=3)
+center = Frame(root, bg='gray2', width=50, height=40, padx=3, pady=3)
 
-# Get the image dimensions (OpenCV stores image data as NumPy ndarray)
-height, width, no_channels = image.shape
-# Create a canvas that can fit the above image
-canvas = tkinter.Canvas(window, width = width, height = height)
-canvas.pack()
+# layout all of the main containers
+root.grid_rowconfigure(1, weight=1)
+root.grid_columnconfigure(0, weight=1)
 
-# Add a PhotoImage to the Canvas
-canvas.create_image(0, 0, image=image, anchor=tkinter.NW)
+top_frame.grid(row=0, sticky="ew")
+center.grid(row=1, sticky="nsew")
 
-#imshow('Original image',image)
-#imshow('Gray image', gray)
-# Run the window loop
-window.mainloop()
+
+# create the widgets for the top frame
+model_label = Label(top_frame, text='Model Dimensions')
+entry_L = Entry(top_frame, background="orange",width=50)
+
+# layout the widgets in the top frame
+entry_L.grid(row=0,column=0,sticky='nswe' )
+model_label.grid(row=0,column=1, columnspan=3,sticky='nswe')
+
+top_frame.grid_rowconfigure(0, weight=1)
+top_frame.grid_columnconfigure(0, weight=1)
+
+
+# create the center widgets
+center.grid_rowconfigure(1, weight=1)
+center.grid_columnconfigure(0, weight=1)
+
+ctr_left = Frame(center, bg='blue', width=275, height=190,padx=3, pady=3)
+#ctr_mid = Frame(center, bg='yellow', width=250, height=190, padx=3, pady=3)
+ctr_right = Frame(center, bg='green', width=275, height=190, padx=3, pady=3)
+#ctr_left.place(relheight=1,relwidth=1,anchor='e')
+#ctr_right.place(relheight=1,relwidth=1,anchor='w')
+#ctr_left.grid(row=0, column=0, sticky="ns")
+#ctr_mid.grid(row=0, column=1, sticky="nsew")
+#ctr_right.grid(row=0, column=1, sticky="ns")
+
+ctr_left.pack(side=LEFT,fill='both', expand=True)
+ctr_right.pack(side = RIGHT,fill='both', expand=True)
+
+ctr_right_TOP= Frame(ctr_right, bg='green', width=275, height=95, padx=3, pady=3)
+ctr_right_BOTTOM = Frame(ctr_right, bg='red', width=275, height=95, padx=3, pady=3)
+
+ctr_right_TOP.pack(side=TOP,fill='both', expand=True)
+ctr_right_BOTTOM.pack(side = TOP,fill='both', expand=True)
+
+
+root.mainloop()
