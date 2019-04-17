@@ -1,23 +1,60 @@
 from tkinter import *
-import cv2
-from cv2 import imread
-import PIL.Image, PIL.ImageTk
-
-global photo
-global cv_image
-global entry_L
-global canvas
+from cv2 import imread,calcHist,cvtColor,COLOR_BGR2GRAY
+import PIL.Image, PIL.ImageTk ,PIL.ImageOps
+from tkinter import filedialog
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.figure import Figure
+from matplotlib import pyplot as plt
 def read_image():
+    global photo
+    global cv_image
+    global entry_L
+    global canvas_LEFT
+    global canvas_RIGHT_BOTTOM
+    global canvas_RIGHT_UP
+    global f1
+    global f2
+    global toolbar1
 
-    cv_image = imread(entry_L.get())
-    photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(cv_image))
-    canvas.create_image(0, 0, image=photo, anchor=NW)
+    #read image
+    path = filedialog.askopenfilename()
+    cv_image = imread(path)
+
+    #set enray_l
+        
+    #create image 
+    gray = cvtColor(cv_image, COLOR_BGR2GRAY)
+    w,h=canvas_LEFT.winfo_width(),canvas_LEFT.winfo_height()
+    image = PIL.Image.fromarray(gray)
+    image = PIL.ImageOps.fit(image, (w,h), PIL.Image.ANTIALIAS)
+    photo = PIL.ImageTk.PhotoImage(image)   
+    canvas_LEFT.create_image(0, 0, image=photo, anchor=NW)
+    
+    #create hisogram
+    p1=f1.gca()
+    p1.hist(cv_image.ravel(),256,[0,256])
+    canvas_RIGHT_UP._tkcanvas.pack()
+
+    # create pie chart
+    labels = ['red', 'Blue', 'green', 'orang']
+    sizes = [15, 30, 45, 10]
+    ##add colors
+    colors = ['#ff9999','#66b3ff','#99ff99','#ffcc99']
+    ax2=f2.gca()
+    ax2.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%',
+            shadow=True, startangle=90)
+    ## Equal aspect ratio ensures that pie is drawn as a circle
+    ax2.axis('equal')
+    canvas_RIGHT_BOTTOM.draw()
+
 
 
 root = Tk()
 root.title('Model Definition')
-
-root.geometry('{}x{}'.format(460, 350))
+w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+root.geometry("%dx%d+0+0" % (w, h-(h*0.1)))
 
 # create all of the main containers
 top_frame = Frame(root, bg='cyan', width=450, height=50, pady=3)
@@ -26,71 +63,59 @@ center = Frame(root, bg='gray2', width=50, height=40, padx=3, pady=3)
 # layout all of the main containers
 root.grid_rowconfigure(1, weight=1)
 root.grid_columnconfigure(0, weight=1)
-
 top_frame.grid(row=0, sticky="ew")
 center.grid(row=1, sticky="nsew")
 
 
 # create the widgets for the top frame
-model_label = Label(top_frame, text='Model Dimensions')
 entry_L = Entry(top_frame, background="orange",width=50)
 btn_image=Button(top_frame, text="open", command=read_image)
 
 # layout the widgets in the top frame
 entry_L.grid(row=0,column=0,sticky='nswe' )
 btn_image.grid(row=0,column=1, columnspan=3,sticky='nswe')
-
 top_frame.grid_rowconfigure(0, weight=1)
 top_frame.grid_columnconfigure(0, weight=1)
 
 
 # create the center widgets
-center.grid_rowconfigure(1, weight=1)
-center.grid_columnconfigure(0, weight=1)
-
-ctr_left = Frame(center, bg='blue', width=275, height=190,padx=3, pady=3)
-ctr_right = Frame(center, bg='green', width=275, height=190, padx=3, pady=3)
-
+ctr_left = Frame(center, bg='blue', width=275, height=190)
+ctr_right = Frame(center, bg='green', width=275, height=190)
 ctr_left.pack(side=LEFT,fill='both', expand=True)
 ctr_right.pack(side = RIGHT,fill='both', expand=True)
 
-canvas = Canvas(ctr_left)
-canvas.pack(fill='both', expand=True)
 
-ctr_right_TOP= Frame(ctr_right, bg='green', width=275, height=95, padx=3, pady=3)
-ctr_right_BOTTOM = Frame(ctr_right, bg='red', width=275, height=95, padx=3, pady=3)
+# create the center_left widgets
+canvas_LEFT = Canvas(ctr_left)
+canvas_LEFT.pack(fill='both', expand=True)
 
+# create the center_Right widgets
+ctr_right_TOP= Frame(ctr_right, bg='green', width=275, height=95)
+ctr_right_BOTTOM = Frame(ctr_right, bg='red', width=275, height=95)
 ctr_right_TOP.pack(side=TOP,fill='both', expand=True)
-ctr_right_BOTTOM.pack(side = TOP,fill='both', expand=True)
+ctr_right_BOTTOM.pack(side = BOTTOM,fill='both', expand=True)
 
-#reads an input image 
- 
+# create the center_Right_Top widgets
+f1 = Figure(figsize=(2,2))
+canvas_RIGHT_UP =FigureCanvasTkAgg(f1,ctr_right_TOP)
+canvas_RIGHT_UP.get_tk_widget().pack(fill='both', expand=True)
+toolbar1 = NavigationToolbar2Tk(canvas_RIGHT_UP,ctr_right_TOP)
+canvas_RIGHT_UP.draw()
+toolbar1.update()
 
-# # Callback for the "Blur" button
+# create the canvas_RIGHT_BOTTOM widgets
+f2 = Figure(figsize=(2,2))
+canvas_RIGHT_BOTTOM =FigureCanvasTkAgg(f2,ctr_right_BOTTOM)
+canvas_RIGHT_BOTTOM.get_tk_widget().pack(fill='both', expand=True)
+toolbar2 = NavigationToolbar2Tk(canvas_RIGHT_BOTTOM,ctr_right_BOTTOM)
+canvas_RIGHT_BOTTOM.draw()
+toolbar2.update()
 
 
-#     photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(cv_image))
-#     canvas.create_image(0, 0, image=photo, anchor=tkinter.NW)
+# find frequency of pixels in range 0-255 
+##histr = calcHist([cv_image],[0],None,[256],[0,256]) 
 
-# # find frequency of pixels in range 0-255 
-# histr = calcHist([cv_image],[0],None,[256],[0,256]) 
-# gray = cvtColor(cv_image, COLOR_BGR2GRAY)
 
-# # Get the image dimensions (OpenCV stores image data as NumPy ndarray)
-# height, width, no_channels = cv_image.shape
-# # Create a canvas that can fit the above image
-# canvas = tkinter.Canvas(window, width = width, height = height)
-# #canvas.pack()
-
-# # Use PIL (Pillow) to convert the NumPy ndarray to a PhotoImage
-# photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(cv_image))
-
-# # Add a PhotoImage to the Canvas
-# canvas.create_image(0, 0, image=photo, anchor=tkinter.NW)
-# # Button that lets the user blur the image
-# btn_blur=tkinter.Button(top_frame, text="Blur", command=blur_image)
-# #btn_blur.pack(side=LEFT, expand=True)
-# #imshow('Original image',image)
-# #imshow('Gray image', gray)
-# Run the window loop
+## Get the image dimensions (OpenCV stores image data as NumPy ndarray)
+##height, width, no_channels = cv_image.shape
 root.mainloop()
