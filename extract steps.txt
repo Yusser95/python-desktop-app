@@ -1,0 +1,6 @@
+1)in cmd install pyintaler by :
+
+	python -m pip install pyinstaller
+2)run commond:
+	pyinstaller.exe --onefile --windowed --exclude-module PyQt5 main.py
+
