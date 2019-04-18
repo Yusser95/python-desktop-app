@@ -57,8 +57,8 @@ w, h = root.winfo_screenwidth(), root.winfo_screenheight()
 root.geometry("%dx%d+0+0" % (w, h-(h*0.1)))
 
 # create all of the main containers
-top_frame = Frame(root, bg='cyan', width=450, height=50, pady=3)
-center = Frame(root, bg='gray2', width=50, height=40, padx=3, pady=3)
+top_frame = Frame(root,  width=450, height=50, pady=3)
+center = Frame(root,  width=50, height=40, padx=3, pady=3)
 
 # layout all of the main containers
 root.grid_rowconfigure(1, weight=1)
@@ -68,8 +68,8 @@ center.grid(row=1, sticky="nsew")
 
 
 # create the widgets for the top frame
-entry_L = Entry(top_frame, background="orange",width=50)
-btn_image=Button(top_frame, text="open", command=read_image)
+entry_L = Entry(top_frame, width=40)
+btn_image=Button(top_frame, text="open", command=read_image, width=10)
 
 # layout the widgets in the top frame
 entry_L.grid(row=0,column=0,sticky='nswe' )
@@ -79,8 +79,8 @@ top_frame.grid_columnconfigure(0, weight=1)
 
 
 # create the center widgets
-ctr_left = Frame(center, bg='blue', width=275, height=190)
-ctr_right = Frame(center, bg='green', width=275, height=190)
+ctr_left = Frame(center,  width=275, height=190)
+ctr_right = Frame(center,  width=275, height=190)
 ctr_left.pack(side=LEFT,fill='both', expand=True)
 ctr_right.pack(side = RIGHT,fill='both', expand=True)
 
@@ -90,8 +90,8 @@ canvas_LEFT = Canvas(ctr_left)
 canvas_LEFT.pack(fill='both', expand=True)
 
 # create the center_Right widgets
-ctr_right_TOP= Frame(ctr_right, bg='green', width=275, height=95)
-ctr_right_BOTTOM = Frame(ctr_right, bg='red', width=275, height=95)
+ctr_right_TOP= Frame(ctr_right,  width=275, height=95)
+ctr_right_BOTTOM = Frame(ctr_right,  width=275, height=95)
 ctr_right_TOP.pack(side=TOP,fill='both', expand=True)
 ctr_right_BOTTOM.pack(side = BOTTOM,fill='both', expand=True)
 

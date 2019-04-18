@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 Tkniter
+output.rar
 __pycache__/
 *.py[cod]
 *$py.class
